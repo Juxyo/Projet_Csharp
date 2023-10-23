@@ -5,12 +5,5 @@ using System.Linq;
 using System.Text;
 
 public abstract class Item {
-
-    public Item() {
-    }
-
-    public string itemType;
-
-    public int quantity;
-
+    public abstract double getPrice();
 }

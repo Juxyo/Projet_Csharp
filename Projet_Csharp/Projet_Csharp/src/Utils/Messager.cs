@@ -6,16 +6,13 @@ using System.Text;
 
 public class Messager : MessageManager {
 
-    public Messager() {
-    }
-
     /// <summary>
     /// @param target 
     /// @param text 
     /// @param ord
     /// </summary>
-    public void sendMessage(int target, string text, Order ord) {
-        // TODO implement here
+    public void sendMessage(Person target, string text, Order ord) {
+        target.sendMessageTo(text, ord);
     }
 
 }
