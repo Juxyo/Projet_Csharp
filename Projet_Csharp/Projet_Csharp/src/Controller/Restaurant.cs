@@ -10,6 +10,7 @@ public class Restaurant {
     private static Clerk[] clerks = new Clerk[1];
     private static DeliveryPerson[] delivpers = new DeliveryPerson[1];
     private static Client[] cli = new Client[1];
+    private static Order[] orders = new Order[0];
     private static ArrayList pers;
     public static MessageManager msgManager= new Messager();
     private bool displayMenu = true;
@@ -19,7 +20,7 @@ public class Restaurant {
         clerks[0] = new Clerk();
         MenuView.DisplayText("Who is the new client?");
         cli[0] = new Client(autoorder);
-        MenuView.DisplayText("Who is the new client?");
+        MenuView.DisplayText("Who is the new delivery person?");
         delivpers[0] = new DeliveryPerson();
         pers = getPersons();
         managePrompt();
@@ -40,15 +41,60 @@ public class Restaurant {
         {
             if (displayMenu)
             {
-                switch(MenuView.AskUser<int>(
+                switch (MenuView.AskUser<int>(
                     "Choose action:\n" +
-                    "1- See restaurant actions\n"+
-                    "2- Toggle auto order creation ("+autoorder+")\n"+
-                    "3- Create an order\n"+
-                    "4- Display orders mandaged by clerk\n"+
-                    "5- Quit\n"
+                    "1- See restaurant actions\n" +
+                    "2- Toggle auto order creation (" + autoorder + ")\n" +
+                    "3- Create an order\n" +
+                    "4- Create a Client\n" +
+                    "5- Create a Clerk\n" +
+                    "6- Create a Delivery man\n" +
+                    "7- Display orders mandaged by clerk\n" +
+                    "8- Display delivery person by delivery\n"+
+                    "9- Display orders by time\n"+
+                    "10- Display average order price\n"+
+                    "11- Display average accounts receivable\n"+
+                    "12- Display all orders\n"+
+                    "13- Display all Client\n"+
+                    "14- Quit\n"
                     ))
                 {
+                    case 4:
+                        {
+                            Client[] ncli = new Client[cli.Length + 1];
+                            for (int i = 0; i < cli.Length; i++)
+                            {
+                                ncli[i] = cli[i];
+                            }
+                            ncli[ncli.Length - 1] = new Client(autoorder);
+                            cli = ncli;
+                            pers = getPersons();
+                            break;
+                        }
+                    case 5:
+                        {
+                            Clerk[] nclerks = new Clerk[clerks.Length + 1];
+                            for (int i = 0; i < clerks.Length; i++)
+                            {
+                                nclerks[i] = clerks[i];
+                            }
+                            nclerks[nclerks.Length - 1] = new Clerk();
+                            clerks = nclerks;
+                            pers = getPersons();
+                            break;
+                        }
+                    case 6:
+                        {
+                            DeliveryPerson[] ndeliv = new DeliveryPerson[delivpers.Length + 1];
+                            for (int i = 0; i < delivpers.Length; i++)
+                            {
+                                ndeliv[i] = delivpers[i];
+                            }
+                            ndeliv[ndeliv.Length - 1] = new DeliveryPerson();
+                            delivpers = ndeliv;
+                            pers = getPersons();
+                            break;
+                        }
                     case 1:
                         {
                             displayMenu = false;
@@ -58,14 +104,15 @@ public class Restaurant {
                         }
                     case 2:
                         {
-                            foreach(Client c in cli) { c.toggleAutoOrder(); }
+                            foreach (Client c in cli) { c.toggleAutoOrder(); }
                             autoorder = !autoorder;
                             break;
                         }
                     case 3:
                         {
                             int cid = MenuView.AskUser<int>("Choose a client:", personsToString(cli));
-                            if (cid < cli.Length && cid >= 0) {
+                            if (cid < cli.Length && cid >= 0)
+                            {
                                 Client c = cli[cid];
                                 displayMenu = false;
                                 AppView.setDisplay(true);
@@ -74,12 +121,42 @@ public class Restaurant {
                             }
                             break;
                         }
-                    case 4:
+                    case 7:
                         {
                             displayOrdersByClerk();
                             break;
                         }
-                    case 5: { return; }
+                    case 8:
+                        {
+                            displayDeliveryPersonByDeliveries();
+                            break;
+                        }
+                    case 9:
+                        {
+                            displayOrdersByTime();
+                            break;
+                        }
+                    case 10:
+                        {
+                            displayAvgOrdersPrice();
+                            break;
+                        }
+                    case 11:
+                        {
+                            displayAvgAccRec();
+                            break;
+                        }
+                    case 12:
+                        {
+                            displayOrders();
+                            break;
+                        }
+                    case 13:
+                        {
+                            displayClients();
+                            break;
+                        }
+                    case 14: { return; }
                 }
             }
             else
@@ -121,7 +198,7 @@ public class Restaurant {
     public void displayOrdersByClerk() {
         string[] tab = new string[clerks.Length+1];
         bool ordered = false;
-        while (!ordered)
+        while (!ordered && clerks.Length > 1)
         {
             for(int i = 1; i < clerks.Length; i++)
             {
@@ -131,7 +208,8 @@ public class Restaurant {
                     clerks[i - 1] = c;
                     break;
                 }
-                ordered = true;
+                if (i >= clerks.Length - 1) { ordered = true; }
+                if (i >= clerks.Length - 1) { ordered = true; }
             }
         }
         for (int i = 1; i < tab.Length; i++) { tab[i] = clerks[i-1].getFullName()+"\t"+clerks[i-1].getManagedOrders(); }
@@ -140,19 +218,115 @@ public class Restaurant {
     }
 
     public void displayDeliveryPersonByDeliveries() {
-        // TODO implement here
+        string[] tab = new string[delivpers.Length + 1];
+        bool ordered = false;
+        
+        while (!ordered && delivpers.Length>1)
+        {
+            for (int i = 1; i < delivpers.Length; i++)
+            {
+                if (delivpers[i - 1].getDeliveriesNum() < delivpers[i].getDeliveriesNum())
+                {
+                    DeliveryPerson d = delivpers[i];
+                    delivpers[i] = delivpers[i - 1];
+                    delivpers[i - 1] = d;
+                    break;
+                }
+                if (i >= delivpers.Length - 1) { ordered = true; }
+            }
+        
+        }
+        for (int i = 1; i < tab.Length; i++) { tab[i] = delivpers[i - 1].getFullName() + "\t" + delivpers[i - 1].getDeliveriesNum(); }
+        tab[0] = "Delivery Person By Deliveries";
+        MenuView.DisplayTab(tab);
     }
 
     public void displayOrdersByTime() {
-        // TODO implement here
+        string[] tab = new string[orders.Length + 1];
+        bool ordered = false;
+        while (!ordered && orders.Length > 1)
+        {
+            for (int i = 1; i < orders.Length; i++)
+            {
+                if (orders[i - 1].getOrderTime() < orders[i].getOrderTime())
+                {
+                    Order o = orders[i];
+                    orders[i] = orders[i - 1];
+                    orders[i - 1] = o;
+                    break;
+                }
+                if (i >= orders.Length - 1) {ordered = true; }
+            }
+        }
+        for (int i = 1; i < tab.Length; i++) { tab[i] = orders[i - 1].getOrdernum() + "\t" + orders[i - 1].getOrderTime().ToString(); }
+        tab[0] = "Orders :";
+        MenuView.DisplayTab(tab);
     }
 
-    public void displayAvgOrdersPrice() {
-        // TODO implement here
+    public void displayAvgOrdersPrice()
+    {
+        if (orders.Length == 0) { MenuView.DisplayText("Avg order price: 0.00$"); return; }
+        double total = 0;
+        foreach (Order ord in orders)
+        {
+            total += ord.calcOrderPrice();
+        }
+        MenuView.DisplayText("Avg order price: " + Math.Round(total / orders.Length, 2) + "$");
     }
 
-    public void displayAvgAccRec() {
-        // TODO implement here
+    public void displayAvgAccRec()
+    {
+        double[] totals = new double[cli.Length];
+        double avg = 0.00;
+        string[] disp = new string[cli.Length + 1];
+        for (int i = 0; i < orders.Length; i++)
+        {
+            Order o = (Order)orders[i];
+            totals[findCliID(o.getCliName())] = o.calcOrderPrice();
+        }
+        for (int i = 0; i < totals.Length; i++)
+        {
+            avg += totals[i];
+            disp[i + 1] = cli[i].getFullName() + ": " + Math.Round(totals[i], 2) + "$";
+        }
+        avg = avg / cli.Length;
+        disp[0] = "Average accounts receivable: " + Math.Round(avg, 2);
+        MenuView.DisplayTab(disp);
+    }
+
+    public void displayOrders()
+    {
+        string[] tab = new string[orders.Length+1];
+        for (int i = 0; i < orders.Length; i++)
+        {
+            tab[i+1] = orders[i].ToString();
+        }
+        tab[0] = "Orders : ";
+        MenuView.DisplayTab(tab);
+    }
+
+    public void displayClients()
+    {
+        string[] tab = new string[cli.Length + 1];
+        for (int i = 0; i < cli.Length; i++)
+        {
+            tab[i + 1] = cli[i].ToString();
+        }
+        tab[0] = "Clients : ";
+        MenuView.DisplayTab(tab);
+    }
+
+
+    private int findCliID(string name)
+    {
+        for (int i = 0; i < cli.Length; i++)
+        {
+            if (cli[i].getFullName() == name)
+            {
+                return i;
+            }
+        }
+        return -1;
     }
 
     public static void createOrder(Order ord) {
@@ -169,6 +343,13 @@ public class Restaurant {
         if (minClerk!=null)
         {
             minClerk.newOrder(ord);
+            Order[] norder = new Order[orders.Length + 1];
+            for (int i = 0; i < orders.Length; i++)
+            {
+                norder[i] = orders[i];
+            }
+            norder[norder.Length - 1] = ord;
+            orders = norder;
         }
     }
 
@@ -188,9 +369,4 @@ public class Restaurant {
         }
         return dp;
     }
-
-    public void endOrder() {
-        // TODO implement here
-    }
-
 }

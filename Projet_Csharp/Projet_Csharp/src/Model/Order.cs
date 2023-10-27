@@ -26,7 +26,6 @@ public class Order {
         address = c.getAddr();
         orderNum = nborders;
         orderTime = DateTime.Now;
-        orderDate = DateTime.Today;
         cusName = c.getFullName();
         status = "Created";
         chrono.Start();
@@ -39,7 +38,7 @@ public class Order {
         else { cashStatus = "Unpaid"; }
         deliveryTime = chrono.ElapsedTime();
     }
-    public TimeSpan getDeliveryTime() { return deliveryTime; }
+    public DateTime getDeliveryTime() { return orderTime; }
     public string getCashState() { return cashStatus; }
     public string getCliName() { return cusName; }
     public string getClerkName() { return cleName; }
@@ -65,8 +64,6 @@ public class Order {
 
     private DateTime orderTime;
 
-    private DateTime orderDate;
-
     private string cusName;
 
     private string cleName;
@@ -75,6 +72,7 @@ public class Order {
 
     private string cashStatus;
 
+    public DateTime getOrderTime() { return orderTime; }
     public void setClerkName(string name) { cleName = name; }
     public void setStatus(string stat) { status = stat; }
 
@@ -95,8 +93,15 @@ public class Order {
     /// <summary>
     /// @param orderNb
     /// </summary>
-    public static void toString(int orderNb) {
-        // TODO implement here
+    public String ToString() {
+        if (status == "delivered")
+        {
+            return "num : " + orderNum + " - price :" + Math.Round(calcOrderPrice(), 2) + "$ - ordered by : " + cusName + " - served by : " + cleName + " - devlivered in : " + deliveryTime.ToString();
+        }
+        else
+        {
+            return "num : " + orderNum + " - price :" + Math.Round(calcOrderPrice(), 2) + "$ - ordered by : " + cusName + " - served by : " + cleName + " - not yet delivered ";
+        }
     }
 
 }

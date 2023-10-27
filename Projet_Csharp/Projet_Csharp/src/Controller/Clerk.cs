@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using AppProjectS7.src.Vue;
 
 public class Clerk : Person {
     public Clerk(string fname,string lname)
@@ -12,8 +13,8 @@ public class Clerk : Person {
     }
     public Clerk()
     {
-        firstName = AppView.AskUser<string>("Enter a first name");
-        lastName = AppView.AskUser<string>("Enter a last name");
+        firstName = MenuView.AskUser<string>("Enter a first name");
+        lastName = MenuView.AskUser<string>("Enter a last name");
     }
 
     public void newOrder(Order ord)

@@ -4,13 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AppProjectS7.src.Vue;
 
 public class DeliveryPerson : Person {
 
     public DeliveryPerson()
     {
-        firstName = AppView.AskUser<string>("Enter a first name");
-        lastName = AppView.AskUser<string>("Enter a last name");
+        firstName = MenuView.AskUser<string>("Enter a first name");
+        lastName = MenuView.AskUser<string>("Enter a last name");
     }
     public DeliveryPerson(string fname, string lname)
     {
@@ -33,6 +34,7 @@ public class DeliveryPerson : Person {
             AppView.DisplayError("Customer did not pay\nOrder Completed in: " + ord.getDeliveryTime());
         }
         Restaurant.msgManager.sendMessage(Restaurant.findPerson(ord.getClerkName()), "order delivered", ord);
+        deliveriesNum += 1;
         occupied = false;
     }
     public bool isOccupied() { return occupied; }
@@ -40,5 +42,11 @@ public class DeliveryPerson : Person {
     /// number of deliveries completed
     /// </summary>
     private int deliveriesNum;
+
+    public int getDeliveriesNum()
+    {
+        return deliveriesNum;
+    }
+
     private bool occupied = false;
 }

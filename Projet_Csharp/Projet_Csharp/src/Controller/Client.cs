@@ -20,10 +20,10 @@ public class Client : Person {
     public Client(bool autoOrder)
     {
         auto = autoOrder;
-        firstName = AppView.AskUser<string>("Enter a first name");
-        lastName = AppView.AskUser<string>("Enter a last name");
-        phoneNum = AppView.AskUser<int>("Enter a phone number");
-        address = AppView.AskUser<string>("Enter a full address");
+        firstName = MenuView.AskUser<string>("Enter a first name");
+        lastName = MenuView.AskUser<string>("Enter a last name");
+        phoneNum = MenuView.AskUser<int>("Enter a phone number");
+        address = MenuView.AskUser<string>("Enter a full address");
         if (auto) { orderFood(); }
     }
 

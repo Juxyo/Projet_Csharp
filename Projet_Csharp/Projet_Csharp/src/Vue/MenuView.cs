@@ -83,6 +83,7 @@ namespace AppProjectS7.src.Vue
         /// <param name="question">the question to ask.</param>
         public static T AskUser<T>(string question)
         {
+            Console.ForegroundColor = ConsoleColor.White;
             while (display)
             {
                 Console.Write(sep + question + " ");
@@ -93,10 +94,12 @@ namespace AppProjectS7.src.Vue
                 }
                 catch (FormatException)
                 {
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Invalid input. Please enter a valid value.");
                 }
                 catch (InvalidCastException)
                 {
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Invalid input. Please enter a valid value.");
                 }
             }
